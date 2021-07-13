@@ -200,14 +200,19 @@
     <script type="text/html" id="template-output">
       <section class="selector">
         <h5>Display Lists</h5>
+        <ul>
         {{#lists}}
+          <li>
         <input
           type="checkbox"
           title="{{name}}"
           checked="checked"
           onclick="(input => document.getElementById(`{{name}}`).hidden = !input.checked)(this)"
         />
+            <label>{{name}}</label>
+          </li>
         {{/lists}}
+        </ul>
       </section>
 
       {{#lists}}
