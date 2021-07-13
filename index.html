@@ -219,6 +219,15 @@
           </li>
         {{/lists}}
         </ul>
+
+        <h5>Display comments</h5>
+        <input
+          type="checkbox"
+          title="show-comments"
+          checked="checked"
+          onclick="(input => !input.checked ? document.querySelectorAll('.comments-block').forEach(el => el.style.display = 'none') : null)(this)"
+        />
+        <label>Show comments</label>
       </section>
 
       {{#lists}}
@@ -250,6 +259,7 @@
             {{/attachmentsCards}}
           </ul>
 
+          <div class="comments-block">
           <h6 class="divider">COMMENTS</h6>
           <ul class="comments">
             {{#actions}}
@@ -260,6 +270,7 @@
             </li>
             {{/actions}} {{/actions.length}}
           </ul>
+        </div>
         </div>
         {{/cards}}
       </section>
