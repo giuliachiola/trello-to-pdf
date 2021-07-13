@@ -209,25 +209,29 @@
         <ul>
         {{#lists}}
           <li>
+            <label>
         <input
           type="checkbox"
           title="{{name}}"
           checked="checked"
           onclick="(input => document.getElementById(`{{name}}`).hidden = !input.checked)(this)"
         />
-            <label>{{name}}</label>
+              {{name}}
+            </label>
           </li>
         {{/lists}}
         </ul>
 
         <h5>Display comments</h5>
+        <label>
         <input
           type="checkbox"
           title="show-comments"
-          checked="checked"
-          onclick="(input => !input.checked ? document.querySelectorAll('.comments-block').forEach(el => el.style.display = 'none') : null)(this)"
+            id="show-comments"
+            onclick="(input => input.checked ? document.querySelectorAll('.comments-block').forEach(el => el.style.display = 'block') : document.querySelectorAll('.comments-block').forEach(el => el.style.display = 'none'))(this)"
         />
-        <label>Show comments</label>
+          Show comments
+        </label>
       </section>
 
       {{#lists}}
@@ -238,9 +242,10 @@
           <h3 class="card-title">{{name}}</h3>
           {{#desc}}{{{desc}}}{{/desc}} {{^desc}}<span style="color: var(--gray)"
             >No Description</span
-          >{{/desc}} {{#actions.length}}
-
+          >{{/desc}} {{#actions.length}} {{#attachmentsImages.length}}
           <h6>ATTACHMENTS IMAGES</h6>
+          {{/attachmentsImages.length}}
+
           <ul class="card-attachments">
             {{#attachmentsImages}}
             <li>
@@ -250,7 +255,9 @@
             {{/attachmentsImages}}
           </ul>
 
+          {{#attachmentsCards.length}}
           <h6>ATTACHMENTS TRELLO CARDS</h6>
+          {{/attachmentsCards.length}}
           <ul class="card-attachments">
             {{#attachmentsCards}}
             <li>
@@ -259,7 +266,7 @@
             {{/attachmentsCards}}
           </ul>
 
-          <div class="comments-block">
+          <div class="comments-block" style="display: none">
           <h6 class="divider">COMMENTS</h6>
           <ul class="comments">
             {{#actions}}
@@ -317,7 +324,7 @@
           }
 
           data.ref[card.id] = {
-            name: card.name,
+            name: card.name.replace(emojiRegex, ""), // remove emoji from titles,
             desc: marked(card.desc).replace(emojiRegex, ""), // remove emoji from description body,
             attachmentsImages: card.attachments.filter((el) =>
               el.url.startsWith("https://trello-attachments.s3.amazonaws.com/")
