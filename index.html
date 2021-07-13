@@ -138,6 +138,12 @@
         border-bottom: 1px solid #026aa7;
         margin: 0 0.5em;
       }
+
+      /* card styles */
+      .card-attachments img {
+        max-width: 100%;
+        width: 100%;
+      }
     </style>
     <style type="text/css" media="print">
       section.selector {
@@ -224,6 +230,26 @@
           {{#desc}}{{{desc}}}{{/desc}} {{^desc}}<span style="color: var(--gray)"
             >No Description</span
           >{{/desc}} {{#actions.length}}
+
+          <h6>ATTACHMENTS IMAGES</h6>
+          <ul class="card-attachments">
+            {{#attachmentsImages}}
+            <li>
+              <a href="{{url}}">{{name}}</a>
+              <img src="{{url}}" alt="{{name}}" />
+            </li>
+            {{/attachmentsImages}}
+          </ul>
+
+          <h6>ATTACHMENTS TRELLO CARDS</h6>
+          <ul class="card-attachments">
+            {{#attachmentsCards}}
+            <li>
+              <a href="{{url}}">{{name}}</a>
+            </li>
+            {{/attachmentsCards}}
+          </ul>
+
           <h6 class="divider">COMMENTS</h6>
           <ul class="comments">
             {{#actions}}
@@ -279,6 +305,12 @@
           data.ref[card.id] = {
             name: card.name,
             desc: marked(card.desc),
+            attachmentsImages: card.attachments.filter((el) =>
+              el.url.startsWith("https://trello-attachments.s3.amazonaws.com/")
+            ),
+            attachmentsCards: card.attachments.filter((el) =>
+              el.url.startsWith("https://trello.com/")
+            ),
             actions: [],
           };
 
