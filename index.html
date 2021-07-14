@@ -145,9 +145,38 @@
       }
 
       /* card styles */
-      .card-attachments img {
+      .card-attachments--img {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .card-attachments--img li,
+      .card-attachments li {
+        margin-bottom: 1rem;
+      }
+
+      .card-attachments--img img {
         max-width: 100%;
+        max-height: 90vh;
+        object-fit: contain;
         width: 100%;
+        border: 1px solid #333;
+      }
+
+      .c-tag {
+        background: grey;
+        padding: 5px;
+        border-radius: 10px;
+        font-size: 11px;
+        color: white;
+        font-weight: bold;
+        vertical-align: middle;
+      }
+      .c-sp {
+        text-align: center;
+        font-family: monospace;
+        color: #e83e8c;
+        font-size: 1.1rem;
       }
     </style>
     <style type="text/css" media="print">
@@ -155,8 +184,20 @@
         display: none;
       }
 
+      seciton:not(:first-child) {
+        page-break-before: always;
+      }
+
       blockquote {
         border: 0;
+      }
+
+      .card-attachments--img img {
+        max-width: 100%;
+        max-height: 267mm;
+        object-fit: contain;
+        width: 100%;
+        border: 1px solid #333;
       }
     </style>
   </head>
@@ -242,27 +283,27 @@
       {{#lists}}
       <section id="{{name}}">
         <h1>{{name}}</h1>
-        {{#cards}}
+        {{#storyPoints}}
+        <div class="c-sp">{{storyPoints}} story points</div>
+        {{/storyPoints}} {{#cards}}
         <div class="card-body">
-          <h3 class="card-title">{{name}}</h3>
+          <h3 class="card-title">
+            {{name}} <span class="c-tag">{{list}}</span>
+          </h3>
           {{#desc}}{{{desc}}}{{/desc}} {{^desc}}<span style="color: var(--gray)"
             >No Description</span
           >{{/desc}} {{#actions.length}} {{#attachmentsImages.length}}
-          <h6>ATTACHMENTS IMAGES</h6>
-          {{/attachmentsImages.length}}
+          <h6>Immagini (attachment)</h6>
 
-          <ul class="card-attachments">
+          <ul class="card-attachments--img">
             {{#attachmentsImages}}
             <li>
-              <a href="{{url}}">{{name}}</a>
-              <img src="{{url}}" alt="{{name}}" />
+              <a href="{{url}}"><img src="{{url}}" alt="{{name}}" /></a>
             </li>
             {{/attachmentsImages}}
           </ul>
-
-          {{#attachmentsCards.length}}
-          <h6>ATTACHMENTS TRELLO CARDS</h6>
-          {{/attachmentsCards.length}}
+          {{/attachmentsImages.length}} {{#attachmentsCards.length}}
+          <h6>Trello Cards (attachment)</h6>
           <ul class="card-attachments">
             {{#attachmentsCards}}
             <li>
@@ -270,6 +311,7 @@
             </li>
             {{/attachmentsCards}}
           </ul>
+          {{/attachmentsCards.length}}
 
           <div class="comments-block" style="display: none">
             <h6 class="divider">COMMENTS</h6>
@@ -319,6 +361,7 @@
           data.ref[list.id] = {
             name: list.name.replace(emojiRegex, ""), // remove emoji from titles,
             cards: [],
+            storyPoints: 0,
           };
           data.lists.push(data.ref[list.id]);
         }
@@ -338,6 +381,14 @@
               el.url.startsWith("https://trello.com/")
             ),
             actions: [],
+            storyPoints: card.pluginData.reduce(
+              (acc, el) => acc + JSON.parse(el.value).size,
+              0
+            ),
+            list: trelloJson.lists
+              .find((list) => list.id == card.idList)
+              ?.name.replace(emojiRegex, "")
+              .trim(),
           };
 
           data.ref[card.idList].cards.push(data.ref[card.id]);
@@ -358,6 +409,14 @@
           } catch (e) {}
         }
 
+        for (list of data.lists) {
+          list.storyPoints = list.cards.reduce(
+            (acc, el) => acc + el.storyPoints,
+            0
+          );
+        }
+
+        console.log(data);
         return data;
       };
 
@@ -370,8 +429,9 @@
         }
         try {
           return parseData(json);
-        } catch {
-          throw "Not a valid Trello File";
+        } catch (err) {
+          // throw "Not a valid Trello File";
+          console.error(err);
         }
       };
 
