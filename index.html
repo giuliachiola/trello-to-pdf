@@ -20,7 +20,12 @@
       src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.8.2/marked.min.js"
       type="text/javascript"
     ></script>
-    <script async defer data-domain="trello.arlyon.dev" src="https://plausible.io/js/plausible.js"></script>
+    <script
+      async
+      defer
+      data-domain="trello.arlyon.dev"
+      src="https://plausible.io/js/plausible.js"
+    ></script>
     <style>
       main {
         min-width: 100vw;
@@ -207,29 +212,29 @@
       <section class="selector">
         <h5>Display Lists</h5>
         <ul>
-        {{#lists}}
+          {{#lists}}
           <li>
             <label>
-        <input
-          type="checkbox"
-          title="{{name}}"
-          checked="checked"
-          onclick="(input => document.getElementById(`{{name}}`).hidden = !input.checked)(this)"
-        />
+              <input
+                type="checkbox"
+                title="{{name}}"
+                checked="checked"
+                onclick="(input => document.getElementById(`{{name}}`).hidden = !input.checked)(this)"
+              />
               {{name}}
             </label>
           </li>
-        {{/lists}}
+          {{/lists}}
         </ul>
 
         <h5>Display comments</h5>
         <label>
-        <input
-          type="checkbox"
-          title="show-comments"
+          <input
+            type="checkbox"
+            title="show-comments"
             id="show-comments"
             onclick="(input => input.checked ? document.querySelectorAll('.comments-block').forEach(el => el.style.display = 'block') : document.querySelectorAll('.comments-block').forEach(el => el.style.display = 'none'))(this)"
-        />
+          />
           Show comments
         </label>
       </section>
@@ -267,17 +272,17 @@
           </ul>
 
           <div class="comments-block" style="display: none">
-          <h6 class="divider">COMMENTS</h6>
-          <ul class="comments">
-            {{#actions}}
-            <li>
-              <span style="font-weight:600">{{author}} </span
-              ><time datetime="{{date}}">{{date}}</time>
-              {{{text}}}
-            </li>
-            {{/actions}} {{/actions.length}}
-          </ul>
-        </div>
+            <h6 class="divider">COMMENTS</h6>
+            <ul class="comments">
+              {{#actions}}
+              <li>
+                <span style="font-weight:600">{{author}} </span
+                ><time datetime="{{date}}">{{date}}</time>
+                {{{text}}}
+              </li>
+              {{/actions}} {{/actions.length}}
+            </ul>
+          </div>
         </div>
         {{/cards}}
       </section>
